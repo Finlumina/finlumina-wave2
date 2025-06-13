@@ -2,30 +2,33 @@
 <html>
 <head>
   <style>
-    body {
+    html, body {
       margin: 0;
+      padding: 0;
       background: transparent;
+      height: 100%;
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100%;
-    }
-
-    .bar {
-      width: 6px;
-      height: 20%;
-      background-color: red;
-      border-radius: 3px;
-      margin: 0 4px;
-      transition: transform 0.3s, opacity 0.3s;
     }
 
     .wave {
       display: flex;
       align-items: flex-end;
-      justify-content: center;
+      gap: 6px;
       height: 40px;
       width: 60px;
+    }
+
+    .bar {
+      width: 6px;
+      height: 20%;
+      background-color: red; /* Color of bars */
+      border-radius: 3px;
+      transform: scaleY(1);
+      opacity: 0.5;
+      transition: transform 0.2s ease, opacity 0.2s ease;
     }
   </style>
 </head>
@@ -40,12 +43,12 @@
     const bars = [bar1, bar2, bar3];
     let interval = null;
 
-    function startAnimation() {
+    function animateBars() {
       if (interval) return;
       interval = setInterval(() => {
         bars.forEach((bar, i) => {
           setTimeout(() => {
-            bar.style.transform = "scaleY(1.8)";
+            bar.style.transform = "scaleY(1.6)";
             bar.style.opacity = "1";
           }, i * 100);
           setTimeout(() => {
@@ -66,15 +69,23 @@
     }
 
     const observer = new MutationObserver(() => {
-      const shouldAnimate = document.body.getAttribute("data-animate") === "true";
-      if (shouldAnimate) startAnimation();
-      else stopAnimation();
+      const animate = document.body.getAttribute("data-animate");
+      if (animate === "true") {
+        animateBars();
+      } else {
+        stopAnimation();
+      }
     });
 
-    observer.observe(document.body, { attributes: true, attributeFilter: ["data-animate"] });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-animate"]
+    });
 
-    // Trigger immediately if needed
-    if (document.body.getAttribute("data-animate") === "true") startAnimation();
+    // Start immediately if already set to true
+    if (document.body.getAttribute("data-animate") === "true") {
+      animateBars();
+    }
   </script>
 </body>
 </html>
