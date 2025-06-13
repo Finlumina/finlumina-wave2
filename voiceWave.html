@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      margin: 0;
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+
+    .bar {
+      width: 6px;
+      height: 20%;
+      background-color: red;
+      border-radius: 3px;
+      margin: 0 4px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .wave {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      height: 40px;
+      width: 60px;
+    }
+  </style>
+</head>
+<body data-animate="false">
+  <div class="wave">
+    <div class="bar" id="bar1"></div>
+    <div class="bar" id="bar2"></div>
+    <div class="bar" id="bar3"></div>
+  </div>
+
+  <script>
+    const bars = [bar1, bar2, bar3];
+    let interval = null;
+
+    function startAnimation() {
+      if (interval) return;
+      interval = setInterval(() => {
+        bars.forEach((bar, i) => {
+          setTimeout(() => {
+            bar.style.transform = "scaleY(1.8)";
+            bar.style.opacity = "1";
+          }, i * 100);
+          setTimeout(() => {
+            bar.style.transform = "scaleY(1)";
+            bar.style.opacity = "0.5";
+          }, i * 100 + 300);
+        });
+      }, 600);
+    }
+
+    function stopAnimation() {
+      clearInterval(interval);
+      interval = null;
+      bars.forEach(bar => {
+        bar.style.transform = "scaleY(1)";
+        bar.style.opacity = "0.5";
+      });
+    }
+
+    const observer = new MutationObserver(() => {
+      const shouldAnimate = document.body.getAttribute("data-animate") === "true";
+      if (shouldAnimate) startAnimation();
+      else stopAnimation();
+    });
+
+    observer.observe(document.body, { attributes: true, attributeFilter: ["data-animate"] });
+
+    // Trigger immediately if needed
+    if (document.body.getAttribute("data-animate") === "true") startAnimation();
+  </script>
+</body>
+</html>
