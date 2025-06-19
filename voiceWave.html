@@ -43,26 +43,14 @@
       animation: bounceOneByOne 0.8s ease-in-out infinite;
     }
 
-    .processing .dot:nth-child(1) {
-      animation-delay: 0s;
-    }
-
-    .processing .dot:nth-child(2) {
-      animation-delay: 0.1s;
-    }
-
-    .processing .dot:nth-child(3) {
-      animation-delay: 0.2s;
-    }
-
-    .processing .dot:nth-child(4) {
-      animation-delay: 0.3s;
-    }
+    .processing .dot:nth-child(1) { animation-delay: 0s; }
+    .processing .dot:nth-child(2) { animation-delay: 0.1s; }
+    .processing .dot:nth-child(3) { animation-delay: 0.2s; }
+    .processing .dot:nth-child(4) { animation-delay: 0.3s; }
 
     @keyframes bounceOneByOne {
       0%, 100% { transform: translateY(0); opacity: 0.7; }
-      40% { transform: translateY(-6px); opacity: 1; }
-      60% { transform: translateY(-6px); opacity: 1; }
+      40%, 60% { transform: translateY(-6px); opacity: 1; }
     }
 
     .idle .dot {
@@ -86,9 +74,10 @@
   <script>
     const dots = document.querySelectorAll('.dot');
     let speakingRAF = null;
+    let lastMode = 'idle';
 
     function startSpeakingAnimation() {
-      stopSpeakingAnimation();
+      stopSpeakingAnimation(); // ✅ ensures no stacking
       function animate() {
         dots.forEach(dot => {
           const scale = 1 + Math.random() * 0.7;
@@ -113,6 +102,10 @@
 
     window.addEventListener("message", (event) => {
       const mode = event.data?.mode;
+      if (!mode || mode === lastMode) return;
+
+      lastMode = mode;
+
       if (mode === "speaking") {
         document.body.className = "speaking";
         startSpeakingAnimation();
