@@ -85,22 +85,24 @@
 
   <script>
     const dots = document.querySelectorAll('.dot');
-    let speakingInterval = null;
+    let speakingRAF = null;
 
     function startSpeakingAnimation() {
       stopSpeakingAnimation();
-      speakingInterval = setInterval(() => {
+      function animate() {
         dots.forEach(dot => {
-          const scale = 1 + Math.random() * 0.8;
+          const scale = 1 + Math.random() * 0.7;
           dot.style.transform = `scaleY(${scale})`;
         });
-      }, 100);
+        speakingRAF = requestAnimationFrame(animate);
+      }
+      animate();
     }
 
     function stopSpeakingAnimation() {
-      if (speakingInterval) {
-        clearInterval(speakingInterval);
-        speakingInterval = null;
+      if (speakingRAF) {
+        cancelAnimationFrame(speakingRAF);
+        speakingRAF = null;
       }
       dots.forEach(dot => {
         dot.style.transform = 'scaleY(1)';
