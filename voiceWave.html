@@ -77,10 +77,10 @@
     let lastMode = 'idle';
 
     function startSpeakingAnimation() {
-      stopSpeakingAnimation();
+      if (speakingRAF) return; // prevent double RAFs
       function animate() {
         dots.forEach(dot => {
-          const scale = 1 + Math.random() * 0.7;
+          const scale = 1 + Math.random() * 0.6;
           dot.style.transform = `scaleY(${scale.toFixed(2)})`;
         });
         speakingRAF = requestAnimationFrame(animate);
@@ -102,8 +102,7 @@
 
     window.addEventListener("message", (event) => {
       const mode = event.data?.mode;
-      if (!mode || mode === lastMode) return;
-
+      if (!mode || mode === lastMode) return; // prevent flickering
       lastMode = mode;
 
       if (mode === "speaking") {
